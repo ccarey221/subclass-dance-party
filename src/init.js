@@ -26,7 +26,7 @@ $(document).ready(function() {
     var dancer = new dancerMakerFunction(
       $("body").height() * Math.random(),
       $("body").width() * Math.random(),
-      Math.random() * 1000
+      300
     );
 
     $('.dancefloor').append(dancer.$node);
@@ -38,15 +38,14 @@ $(document).ready(function() {
     } else {
       window.villainDancers.push(dancer);
     }
-
   });
 
   $('.LineUpButton').on('click', function(event) {
     for (var i = 0; i < window.heroDancers.length; i++) {
-      window.heroDancers[i].setPosition(i*50 + 200, 500);
+      window.heroDancers[i].setPosition(i * 50 + 200, 500);
     }
     for (var i = 0; i < window.villainDancers.length; i++) {
-      window.villainDancers[i].setPosition(i*50 + 200, 1000);
+      window.villainDancers[i].setPosition(i * 50 + 200, 1000);
     }
   });
 
@@ -72,10 +71,124 @@ $(document).ready(function() {
       }
     }
 
-    targetDancer.setPosition(heroMatch.top, heroMatch.left + 100);
-
+    targetDancer.$node.animate({
+      left: heroMatch.left + 100,
+      top: heroMatch.top
+    }, 1000, function() {
+      targetDancer.setPosition(heroMatch.top, heroMatch.left + 100);
+    });
   });
 
+/*  document.addEventListener('keydown', keyDownTextField, false);
+  var lastPress = 'down';
+  var keyDownTextField = function(e) {
+    e.preventDefault();
+    var keyCode = e.keyCode;
+    console.log(keyCode);
+    if (keyCode === 37) {
+    console.log('left arrow');
+      $(heroDancers[0].$node).stop().animate({
+        left: '-=200'
+      });
+    } 
+    if (keyCode === 39) { 
+    console.log('right arrow');
+      $('.heroDancer').stop().animate({
+        left: '+=200'
+      }); 
+    }
+    if (keyCode === 38) {
+    console.log('up arrow');
+      $('.heroDancer').stop().animate({
+        up: '+=200'
+      });
+    }
+    if (keyCode === 40) {
+    console.log('down arrow');
+      $('.heroDancer').stop().animate({
+        up: '+=200'
+      }), 100, function() {};
+    }
+  };*/
 
+  var moveUp = function() {
+    HeroDancer.prototype.step = function() {
+      // call the old version of step at the beginning of any call to this new version of step
+      Dancer.prototype.step.call(this);
+      // toggle() is a jQuery method to show/hide the <span> tag.
+      // See http://api.jquery.com/category/effects/ for this and
+      // other effects you can use on a jQuery-wrapped html tag.
+      this.$node.animate({
+        top: '-=50px'
+      }, 200);
+    };
+
+    heroDancers[0].step();
+
+  };
+
+  var moveDown = function() {
+    HeroDancer.prototype.step = function() {
+      // call the old version of step at the beginning of any call to this new version of step
+      Dancer.prototype.step.call(this);
+      // toggle() is a jQuery method to show/hide the <span> tag.
+      // See http://api.jquery.com/category/effects/ for this and
+      // other effects you can use on a jQuery-wrapped html tag.
+      this.$node.animate({
+        top: '+=50px'
+      }, 200);
+    };
+
+    heroDancers[0].step();
+
+  };
+
+  var moveLeft = function() {
+    HeroDancer.prototype.step = function() {
+      // call the old version of step at the beginning of any call to this new version of step
+      Dancer.prototype.step.call(this);
+      // toggle() is a jQuery method to show/hide the <span> tag.
+      // See http://api.jquery.com/category/effects/ for this and
+      // other effects you can use on a jQuery-wrapped html tag.
+      this.$node.animate({
+        left: '-=50px'
+      }, 200);
+    };
+
+    heroDancers[0].step();
+
+  };
+
+  var moveRight = function() {
+    HeroDancer.prototype.step = function() {
+      // call the old version of step at the beginning of any call to this new version of step
+      Dancer.prototype.step.call(this);
+      // toggle() is a jQuery method to show/hide the <span> tag.
+      // See http://api.jquery.com/category/effects/ for this and
+      // other effects you can use on a jQuery-wrapped html tag.
+      this.$node.animate({
+        left: '+=50px'
+      }, 200);
+    };
+
+    heroDancers[0].step();
+
+  };
+  $(document).keypress(function(e) {
+    var code = e.keyCode || e.which;
+    console.log(code);
+    if (code === 97) { //left (a)
+      moveLeft();
+    } else if (code === 119) { //Up (w)
+      moveUp();
+    } else if (code === 100) { //right (d)
+      moveRight();
+    } else if (code === 115) { //down (s)
+      moveDown();
+    }
+  });
 });
+
+//check for keypress:
+
 
