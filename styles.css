@@ -34,14 +34,14 @@ body, a:link, a:visited, a:active{
   border-radius: none;
   background-image: url('https://media.giphy.com/media/rvosQkb3GSsy4/giphy.gif');
   background-size: cover;
-  height: 100px;
-  width: 60px;
+  height: 150px;
+  width: 90px;
   background-position: center;
 
 
 }
 
-.villain{
+.zombie{
   border: none;
   border-radius: none;
   background-image: url('http://i996.photobucket.com/albums/af89/zombie-nee/GIF/411164p2r3mzaml8.gif');
