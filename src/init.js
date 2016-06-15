@@ -4,7 +4,7 @@ $(document).ready(function() {
   window.gameEnders = [];
   window.heroDancers = [];
 
-  $('.addDancerButton').on('click', function(event) {
+  //$('.addDancerButton').on('click', function(event) {
     /* This function sets up the click handlers for the create-dancer
      * buttons on dancefloor.html. You should only need to make one small change to it.
      * As long as the "data-dancer-maker-function-name" attribute of a
@@ -18,36 +18,22 @@ $(document).ready(function() {
      * A new object of the given type will be created and added
      * to the stage.
      */
-    var dancerMakerFunctionName = $(this).data('dancer-maker-function-name');
+    //var dancerMakerFunctionName = $(this).data('dancer-maker-function-name');
 
     // get the maker function for the kind of dancer we're supposed to make
-    var dancerMakerFunction = window[dancerMakerFunctionName];
+    //var dancerMakerFunction = window[dancerMakerFunctionName];
 
     // make a dancer with a random position
 
-    var dancer = new dancerMakerFunction(
-      $("body").height() * Math.random(),
-      $("body").width() * Math.random(),
-      300
-    );
-
-    $('.dancefloor').append(dancer.$node);
-    console.log(dancer.$node.css('top'));
-
-    //push dancers to respective arrays.
-    if (dancer.$node.hasClass('hero')) {
-      window.heroDancers.push(dancer);
-    } else {
-      window.zombieDancers.push(dancer);
-    }
-  });
 
   var centerScreenLeft = $('body').width() / 2;
   var centerScreenTop = $('body').height() / 2;
+  var bottomScreen = $('body').height();
+
   console.log(centerScreenLeft);
   var heroDancer = new HeroDancer(
-    centerScreenTop - 300,
-    centerScreenLeft - 200,
+    100,
+    100,
     300
   );
 
@@ -142,7 +128,7 @@ $(document).ready(function() {
     }
   };*/
 
-  var direction = null;
+  var direction = 'down';
   var linedUp = null;
 
   var moveUp = function() {
@@ -204,42 +190,6 @@ $(document).ready(function() {
     }
   };
 
-  setInterval(function() {
-    if (!linedUp) {
-      continueDirection();
-      detectCollision(zombieDancers);
-      detectCollision(gameEnders);
-    } else {
-      heroDancer.setPosition(centerScreenTop - 300, centerScreenLeft - 300);
-      if ($('.zombie').hasClass('flip')) {
-        $('.zombie').animate({
-          left: '-=50'
-        }, 300, function() {
-          $('.zombie').removeClass('flip');
-        });
-      } else {
-        $('.zombie').animate({
-          left: '+=50'
-        }, 300, function() {
-          $('.zombie').addClass('flip');
-        });
-      }
-    }
-  }, 300);
-
-  $(document).keypress(function(e) {
-    var code = e.keyCode || e.which;
-    // console.log(code);
-    if (code === 97) { //left (a)
-      moveLeft();
-    } else if (code === 119) { //Up (w)
-      moveUp();
-    } else if (code === 100) { //right (d)
-      moveRight();
-    } else if (code === 115) { //down (s)
-      moveDown();
-    }
-  });
 
   //collision detection:
   var detectCollision = function(dancerArray) {
@@ -280,6 +230,68 @@ $(document).ready(function() {
     }
   };
 
+  var checkRightSide = function() {
+    if (!$('body').hasClass('toGraveyard') && heroDancer.$node.position().top > bottomScreen) {
+      $('.popcorn').toggle();
+      $('body').addClass('toGraveyard');
+      direction = 'up';
+      setInterval(function() {
+        var dancer = new ZombieDancer(//dancerMakerFunction(
+          $("body").height() * Math.random(),
+          $("body").width() * Math.random(),
+          300
+        );
+
+        $('.dancefloor').append(dancer.$node);
+        console.log(dancer.$node.css('top'));
+
+        //push dancers to respective arrays.
+        if (dancer.$node.hasClass('hero')) {
+          window.heroDancers.push(dancer);
+        } else {
+          window.zombieDancers.push(dancer);
+        }
+      }, 2000);
+    }
+  };
+
+  setInterval(function() {
+    if (!linedUp) {
+      continueDirection();
+      detectCollision(zombieDancers);
+      detectCollision(gameEnders);
+      checkRightSide();
+    } else {
+      heroDancer.setPosition(centerScreenTop - 300, centerScreenLeft - 300);
+      if ($('.zombie').hasClass('flip')) {
+        $('.zombie').animate({
+          left: '-=50'
+        }, 300, function() {
+          $('.zombie').removeClass('flip');
+        });
+      } else {
+        $('.zombie').animate({
+          left: '+=50'
+        }, 300, function() {
+          $('.zombie').addClass('flip');
+        });
+      }
+    }
+  }, 300);
+
+  $(document).keypress(function(e) {
+    var code = e.keyCode || e.which;
+    // console.log(code);
+    if (code === 97) { //left (a)
+      moveLeft();
+    } else if (code === 119) { //Up (w)
+      moveUp();
+    } else if (code === 100) { //right (d)
+      moveRight();
+    } else if (code === 115) { //down (s)
+      moveDown();
+    }
+  });
 
 
 });

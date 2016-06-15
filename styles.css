@@ -5,10 +5,16 @@ body{
   margin: 0px;
   background-color:#444;
   font-size: 18px;
-  background-image: url('https://www.salesfusion.com/wp-content/uploads/2015/10/graveyard.jpg');
+  background-image: url('http://fullhdpictures.com/wp-content/uploads/2016/02/Magnificent-Cinema-Wallpaper.jpg');
   background-size: cover;
 
 }
+
+.toGraveyard {
+  background-image: url('https://www.salesfusion.com/wp-content/uploads/2015/10/graveyard.jpg');
+  z-index: 0;
+}
+
 body, a:link, a:visited, a:active{
   color: lightblue;
 }
@@ -28,8 +34,6 @@ body, a:link, a:visited, a:active{
   border:10px solid blue;
   border-radius:10px;
   position:absolute;
-  padding: 0;
-  margin: 200px;
 }
 
 .hero{
@@ -64,4 +68,16 @@ body, a:link, a:visited, a:active{
 
 .flip {
   transform: scaleX(-1);
+}
+
+.popcorn {
+  background-image: url('https://m.popkey.co/a818d6/4Vvbx.gif');
+  position: relative;
+  left: 1100px;
+  top: 400px;
+  background-size: contain;
+  height: 150px;
+  width: auto;
+  background-repeat: no-repeat;
+
 }
