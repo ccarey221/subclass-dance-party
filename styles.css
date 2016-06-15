@@ -14,8 +14,9 @@ body, a:link, a:visited, a:active{
 }
 .title, .addDancerButton{
   padding:5px 12px;
-  float:right;d
+  float:right;
 }
+
 .topbar{
   height:32px;
   background-color: #555;
@@ -27,6 +28,8 @@ body, a:link, a:visited, a:active{
   border:10px solid blue;
   border-radius:10px;
   position:absolute;
+  padding: 0;
+  margin: 200px;
 }
 
 .hero{
@@ -37,8 +40,7 @@ body, a:link, a:visited, a:active{
   height: 150px;
   width: 90px;
   background-position: center;
-
-
+  z-index: 9;
 }
 
 .zombie{
@@ -49,4 +51,17 @@ body, a:link, a:visited, a:active{
   height: 150px;
   width: 90px;
   background-size: cover;
+}
+
+.endGame {
+  background-image: url('https://findlaydonnan.files.wordpress.com/2009/07/moonwalker-game-over-poster.jpg');
+  background-size: contain;
+  background-color: black;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 10;
+}
+
+.flip {
+  transform: scaleX(-1);
 }

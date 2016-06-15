@@ -1,6 +1,7 @@
 $(document).ready(function() {
   window.zombieDancers = [];
   window.michaelChasers = [];
+  window.gameEnders = [];
   window.heroDancers = [];
 
   $('.addDancerButton').on('click', function(event) {
@@ -41,9 +42,12 @@ $(document).ready(function() {
     }
   });
 
+  var centerScreenLeft = $('body').width() / 2;
+  var centerScreenTop = $('body').height() / 2;
+  console.log(centerScreenLeft);
   var heroDancer = new HeroDancer(
-    $('body').height() / 2,
-    $('body').width() / 2,
+    centerScreenTop - 300,
+    centerScreenLeft - 200,
     300
   );
 
@@ -54,20 +58,29 @@ $(document).ready(function() {
 
 
   $('.LineUpButton').on('click', function(event) {
-    for (var i = 0; i < window.heroDancers.length; i++) {
-      window.heroDancers[i].setPosition(i * 50 + 200, 500);
-    }
-    for (var i = 0; i < window.zombieDancers.length; i++) {
-      window.zombieDancers[i].setPosition(i * 50 + 200, 1000);
-    }
     if (linedUp) {
       linedUp = false;
+      heroDancer.setPosition(10, 10);
+
     } else {
       linedUp = true;
     }
+
+    for (var i = 1; i < window.michaelChasers.length; i++) {
+      if (i < michaelChasers.length / 2) {
+        window.michaelChasers[i].setPosition(i * 50 + 100, 200);
+      } else {
+        window.michaelChasers[i].setPosition((i - (michaelChasers.length / 2) + 1) * 50 + 100, 1000);
+      }
+    }
+
+    for (var i = 0; i < window.zombieDancers.length; i++) {
+      window.zombieDancers[i].setPosition(600, i * 50 + 500);
+    }
+
   });
 
-/*  $('.dancefloor').on('mouseover', '.zombie', function(event) {
+  /*$('.dancefloor').on('mouseover', '.zombie', function(event) {
     var targetDancer = null;
     var totalDif = 10000;
     var heroMatch = null;
@@ -95,8 +108,8 @@ $(document).ready(function() {
     }, 1000, function() {
       targetDancer.setPosition(heroMatch.top, heroMatch.left + 100);
     });
-  });*/
-
+  });
+*/
 /*  document.addEventListener('keydown', keyDownTextField, false);
   var lastPress = 'down';
   var keyDownTextField = function(e) {
@@ -135,7 +148,7 @@ $(document).ready(function() {
   var moveUp = function() {
     // console.log('up arrow');
     $(heroDancer.$node).stop().animate({
-      top: '-=100'
+      top: '-=150'
     }, 300, function() {
       heroDancer.top -= 60;
     });
@@ -145,7 +158,7 @@ $(document).ready(function() {
   var moveDown = function() {
     // console.log('down arrow');
     $(heroDancer.$node).stop().animate({
-      top: '+=100'
+      top: '+=150'
     }, 300, function() {
       heroDancer.top += 60;
     });
@@ -155,7 +168,7 @@ $(document).ready(function() {
   var moveLeft = function() {
     // console.log('left arrow');
     $(heroDancer.$node).stop().animate({
-      left: '-=100'
+      left: '-=150'
     }, 300, function() {
       heroDancer.left -= 60;
     });
@@ -165,7 +178,7 @@ $(document).ready(function() {
   var moveRight = function() {
     // console.log('right arrow');
     $(heroDancer.$node).stop().animate({
-      left: '+=100'
+      left: '+=150'
     }, 300, function() {
       heroDancer.left += 60;
     }); 
@@ -182,8 +195,10 @@ $(document).ready(function() {
       updateFollowerPostitions();
     } else if (direction === 'left') {
       moveLeft();
+      $('.zombie').removeClass('flip');
       updateFollowerPostitions();
     } else if (direction === 'right') {
+      $('.zombie').addClass('flip');
       moveRight();
       updateFollowerPostitions();
     }
@@ -192,47 +207,63 @@ $(document).ready(function() {
   setInterval(function() {
     if (!linedUp) {
       continueDirection();
-      detectCollision();
+      detectCollision(zombieDancers);
+      detectCollision(gameEnders);
+    } else {
+      heroDancer.setPosition(centerScreenTop - 300, centerScreenLeft - 300);
+      if ($('.zombie').hasClass('flip')) {
+        $('.zombie').animate({
+          left: '-=50'
+        }, 300, function() {
+          $('.zombie').removeClass('flip');
+        });
+      } else {
+        $('.zombie').animate({
+          left: '+=50'
+        }, 300, function() {
+          $('.zombie').addClass('flip');
+        });
+      }
     }
-  }, 600);
+  }, 300);
 
   $(document).keypress(function(e) {
     var code = e.keyCode || e.which;
     // console.log(code);
     if (code === 97) { //left (a)
-      heroDancer.directionTop = 0;
-      heroDancer.directionLeft = 20;
       moveLeft();
     } else if (code === 119) { //Up (w)
-      heroDancer.directionTop = 20;
-      heroDancer.directionLeft = 0;
       moveUp();
     } else if (code === 100) { //right (d)
-      heroDancer.directionTop = 0;
-      heroDancer.directionLeft = -20;
       moveRight();
     } else if (code === 115) { //down (s)
-      heroDancer.directionTop = -20;
-      heroDancer.directionLeft = 0;
       moveDown();
     }
   });
 
   //collision detection:
-  var detectCollision = function() {
+  var detectCollision = function(dancerArray) {
   //iterate through array of zombies
-    for (var zombie = 0; zombie < zombieDancers.length; zombie++) {
+    for (var zombie = 0; zombie < dancerArray.length; zombie++) {
       //if baby michael's left or right page position is within the zombie's left/right bounds
-      if ((zombieDancers[zombie].$node.position().left < heroDancer.$node.position().left && heroDancer.$node.position().left < zombieDancers[zombie].$node.position().left + 90) ||
-        (zombieDancers[zombie].$node.position().left < heroDancer.$node.position().left + 90 && heroDancer.$node.position().left + 90 < zombieDancers[zombie].$node.position().left + 90)) {
+      if ((dancerArray[zombie].$node.position().left < heroDancer.$node.position().left && heroDancer.$node.position().left < dancerArray[zombie].$node.position().left + 90) ||
+        (dancerArray[zombie].$node.position().left < heroDancer.$node.position().left + 90 && heroDancer.$node.position().left + 90 < dancerArray[zombie].$node.position().left + 90)) {
         //if baby michael's top or bottom page position is within the zombie's top/bottom bounds
-        if ((zombieDancers[zombie].$node.position().top < heroDancer.$node.position().top && heroDancer.$node.position().top < zombieDancers[zombie].$node.position().top + 150) ||
-        (zombieDancers[zombie].$node.position().top < heroDancer.$node.position().top + 150 && heroDancer.$node.position().top + 150 < zombieDancers[zombie].$node.position().top + 150)) {
+        if ((dancerArray[zombie].$node.position().top < heroDancer.$node.position().top && heroDancer.$node.position().top < dancerArray[zombie].$node.position().top + 150) ||
+        (dancerArray[zombie].$node.position().top < heroDancer.$node.position().top + 150 && heroDancer.$node.position().top + 150 < dancerArray[zombie].$node.position().top + 150)) {
           //add zombie to followBabyMichael array
           var chaserArrayLength = michaelChasers.length;
-          michaelChasers.push(zombieDancers[zombie]);
+          michaelChasers.push(dancerArray[zombie]);
           //update zombie's position to be equal to position of previous index in followmichael array
-          zombieDancers[zombie].setPosition(michaelChasers[chaserArrayLength - 1].top, michaelChasers[chaserArrayLength - 1].left);
+          dancerArray[zombie].setPosition(michaelChasers[chaserArrayLength - 1].top, michaelChasers[chaserArrayLength - 1].left);
+          if (dancerArray == zombieDancers) {
+            dancerArray.splice(zombie, 1);
+            gameEnders = michaelChasers.slice(3);
+          } else if (dancerArray == gameEnders) {
+            $('body').addClass('endGame');
+            $('.dancer').toggle();
+            $('.hero').toggle();
+          }
         }
       }
     }
@@ -245,15 +276,10 @@ $(document).ready(function() {
       //update each zombie position to position of previous zombie in array
       var curZombie = michaelChasers[zombie];
       var prevZombie = michaelChasers[zombie - 1];
-      updateFollowerDirection(curZombie, prevZombie);
-      curZombie.setPosition(prevZombie.$node.position().top + curZombie.directionTop, prevZombie.$node.position().left + curZombie.directionLeft);
+      curZombie.setPosition(prevZombie.$node.position().top, prevZombie.$node.position().left);
     }
   };
 
-  var updateFollowerDirection = function(zombie, prevZombie) {
-    zombie.directionLeft = prevZombie.directionLeft;
-    zombie.directionTop = prevZombie.directionTop;
-  };
 
 
 });
